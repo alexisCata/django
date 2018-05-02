@@ -1,0 +1,17 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <p class="display-4">Hello, {{ user.first_name }} {{ user.last_name }} ({{ user.username }})</p>
+
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-warning btn-xs">
+            Logout
+        </button>
+    </form>
+
+{% else %}
+    <a class="lead" href="{% url 'login' %}">Log in</a>
+{% endif %}
+{% endblock content %}
