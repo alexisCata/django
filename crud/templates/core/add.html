@@ -5,7 +5,17 @@
 
     <form method="POST">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_table }}
+       <table>
+
+           {{ formset.management_form }}
+
+           {% for form in formset %}
+           <tr>
+          <td class="first">{{form.as_table }}</td>
+            </tr>
+           {% endfor %}
+       </table>
         <button type="submit">Save</button>
     </form>
 
