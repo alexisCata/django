@@ -1,0 +1,15 @@
+{% extends "registration/login.html" %}
+
+{% block content %}
+{% if user.is_authenticated %}
+
+    <a class="display-4">Delete user {{ user_to_delete }}?</a>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+{% else %}
+    <a class="lead" href="{% url 'login' %}">Log in</a>
+{% endif %}
+{% endblock content %}

@@ -1,15 +1,27 @@
-{% extends "core/base.html" %}
+{% extends "registration/login.html" %}
+
 
 {% block content %}
 {% if user.is_authenticated %}
-    <p class="display-4">Hello, {{ user.first_name }} {{ user.last_name }} ({{ user.username }})</p>
+    <!--<p class="display-4">Hello, {{ user.first_name }} {{ user.last_name }} ({{ user.username }})</p>-->
 
-    <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button class="btn btn-warning btn-xs">
-            Logout
-        </button>
-    </form>
+<a href="{% url 'add_user' %}">Add user</a>
+
+<ul>
+    {% for v in users %}
+        <li>{{ v.first_name }} {{ v.last_name }}
+            <a href="{% url 'update_user' id=v.id %}">Edit</a>
+
+        </li>
+        <ul>
+        {% for account in v.bankaccount_set.all %}
+        <li>{{ account.IBAN }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</ul>
+
+
 
 {% else %}
     <a class="lead" href="{% url 'login' %}">Log in</a>

@@ -5,10 +5,6 @@ from social_django.views import disconnect
 
 AUTH_BACKEND = 'google-oauth2'
 
-@login_required
-def home(request):
-    return render(request, 'core/home.html')
-
 
 @login_required
 def logout(request):
