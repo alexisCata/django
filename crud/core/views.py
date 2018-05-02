@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
 
-from .forms import BankUserForm
+from .forms import BankUserForm, BankAccountForm
 from .models import BankUser, BankAccount
 
 
@@ -17,12 +17,12 @@ def list_users(request):
 def add_user(request):
     form = BankUserForm(request.POST or None)
 
-    AccountFormSet = inlineformset_factory(BankUser, BankAccount, fields=('IBAN',))
+    AccountFormSet = inlineformset_factory(BankUser, BankAccount, form=BankAccountForm, fields=('IBAN',), fk_name='bank_user')
     bankuser = BankUser()
-    formset = AccountFormSet(instance=bankuser, prefix='form')
+    formset = AccountFormSet(request.POST or None, instance=bankuser, prefix='form')
 
     if form.is_valid():
-
+        prev = form
         form = form.save(commit=False)
         form.owner = request.user
         form.save()
@@ -32,8 +32,11 @@ def add_user(request):
         formset = AccountFormSet(request.POST, instance=bankuser, prefix='form')
         if formset.is_valid():
             formset.save()
-
-        return redirect('home')
+            return redirect('home')
+        else:
+            bankuser.delete()
+            form = prev
+            # formset._errors = formset.non_form_errors()
 
     return render(request, 'core/add.html', {'form': form, 'formset': formset})
 
@@ -51,7 +54,7 @@ def update_user(request, id):
         formset.save()
         return redirect('home')
 
-    return render(request, 'core/update.html',
+    return render(request, 'core/add.html',
                   {'form': form, 'user': request.user, 'bank_user': user, 'formset': formset})
 
 
