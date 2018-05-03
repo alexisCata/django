@@ -9,7 +9,7 @@
 
 <ul>
     {% for v in users %}
-        <li>{{ v.first_name }} {{ v.last_name }}
+        <li>{{ v.first_name }} {{ v.last_name }} ({{ v.DNI }})
             <a href="{% url 'update_user' id=v.id %}">Edit</a>
 
         </li>

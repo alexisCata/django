@@ -100,6 +100,9 @@ def add_bank_account(request, id):
 
 @login_required
 def update_user(request, id):
+    if request.POST and 'cancel' in request.POST:
+        return redirect('home')
+
     user = BankUser.objects.get(id=id)
     form = BankUserForm(request.POST or None, instance=user)
 
@@ -114,6 +117,8 @@ def update_user(request, id):
             return redirect('home')
         elif 'save_and_add_ba' in request.POST:
             return redirect('add_bank_account', user.id)
+
+
 
     return render(request, 'core/add.html',
                   {'form': form, 'user': request.user, 'bank_user': user, 'accounts': accounts})#'formset': formset})
