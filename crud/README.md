@@ -12,6 +12,9 @@ It uses:
 
 - social-auth-app-django==2.1.0
 
+- django-bootstrap3==10.0.1
+
+
 ## Use
 ```
 docker build -t django_crud .

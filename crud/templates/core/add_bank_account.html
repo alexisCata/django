@@ -1,4 +1,5 @@
 {% extends "registration/login.html" %}
+{% load bootstrap3 %}
 
 {% block content %}
 {% if user.is_authenticated %}
@@ -6,12 +7,15 @@
     <form method="POST">
         {% csrf_token %}
         <table>
-        {{ form.as_table }}
+        {% bootstrap_form form %}
             {{ form.non_field_errors }}
        </table>
 
-        <button type="submit" name="save">Save</button>
-        <button onClick="javascript:history.go(-1);">Cancel</button>
+         {% buttons %}
+        {% bootstrap_button "Save" name="save" button_type="submit" button_class="btn-primary" %}
+        {% bootstrap_button "Cancel" name="reset" button_type="reset" button_class="btn-primary" href="javascript:history.go(-1);"%}
+        {% endbuttons %}
+
     </form>
 
     {% if bank_user %}

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'social_django',
+    'bootstrap3',
 ]
 
 MIDDLEWARE = [
@@ -138,12 +139,12 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASS', "alexis"),
     }
 }
-# DATABASES = {# 'django.db.backends.mysql'
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+DATABASES = {# 'django.db.backends.mysql'
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 

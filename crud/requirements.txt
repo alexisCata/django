@@ -2,3 +2,4 @@ Django==2.0.4
 psycopg2==2.7.4
 python-social-auth==0.3.6
 social-auth-app-django==2.1.0
+django-bootstrap3==10.0.1

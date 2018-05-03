@@ -2,21 +2,34 @@
 
 {% block login %}
   <!--<h1>Login</h1>-->
-{% if user.is_authenticated %}
-    <a class="navbar-brand" href="/">Hello, {{ user.first_name }} {{ user.last_name }} ({{ user.username }})</a>
-    <form action="{% url 'logout' %}" method="post">
+
+
+<div class="col-md-4">
+  {% if user.is_authenticated %}
+    <a class="navbar-brand " href="/">Hello, {{ user.first_name }} {{ user.last_name }} ({{ user.username }})</a>
+    {% endif %}
+</div>
+
+
+<div class="col-4">
+  {% if user.is_authenticated %}
+    <form class="pull-right" action="{% url 'logout' %}" method="post">
         {% csrf_token %}
-        <button class="btn btn-warning btn-xs">
+        <button class="btn btn-warning btn-md pull-right">
             Logout
         </button>
     </form>
-
-{% else %}
-    <form action="{% url 'social:begin' 'google-oauth2' %}" method="post">
+    {% else %}
+    <form class="pull-right" action="{% url 'social:begin' 'google-oauth2' %}" method="post">
         {% csrf_token %}
         <button class="btn btn-primary btn-xs">
             Login with Google
         </button>
     </form>
 {% endif %}
+
+</div>
+
+
+
 {% endblock %}

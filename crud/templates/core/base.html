@@ -1,6 +1,12 @@
 
 <!DOCTYPE html>
 {% load static %}
+{% load bootstrap3 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% bootstrap_messages %}
 <html>
 <head>
 
@@ -13,10 +19,16 @@
 
 	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
 		<div class="container">
-				<a class="navbar-brand" href="/">Crud Bank Users</a>
-			{% block login %}
+
+			<div class="col-md-4">
+			  <a class="navbar-brand" href="/">Crud Bank Users</a>
+			</div>
+			  {% block login %}
 	    	{% endblock login %}
+
+
 		</div>
+
 	</nav>
     <div class="container margin">
 	    {% block content %}

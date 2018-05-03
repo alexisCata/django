@@ -1,14 +1,19 @@
 {% extends "registration/login.html" %}
-
+{% load bootstrap3 %}
 {% block content %}
 {% if user.is_authenticated %}
 
-    <a class="display-4">Delete user {{ user_to_delete }}?</a>
+    <p>Delete user {{ user_to_delete }}?</p>
 
 <form method="POST">
     {% csrf_token %}
-    <button type="submit" name="delete">Delete</button>
-    <button onClick="javascript:history.go(-1);">Cancel</button>
+
+     {% buttons %}
+        {% bootstrap_button "Delete" name="delete" button_type="submit" button_class="btn-danger" %}
+        {% bootstrap_button "Cancel" name="reset" button_type="reset" button_class="btn-primary" href="javascript:history.go(-1);"%}
+        {% endbuttons %}
+    <!--<button type="submit" name="delete">Delete</button>-->
+    <!--<button onClick="javascript:history.go(-1);">Cancel</button>-->
 
 </form>
 {% else %}

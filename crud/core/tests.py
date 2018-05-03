@@ -111,11 +111,12 @@ class TestViewAddUser(TestCase):
 
                         'first_name': 'firstname',
                         'last_name': 'lastname',
-                        'DNI': '12345678Z'}
+                        'DNI': '12345678Z',
+                        'save': ''}
 
         response = add_user(request)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
         user = BankUser.objects.filter(first_name='firstname', last_name='lastname', DNI='12345678Z')
         num = len(user)
@@ -137,7 +138,7 @@ class TestViewAddBankAccount(TestCase):
         request.user = self.user
         response = add_bank_account(request, self.bankuser.id)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'<button type="submit" name="save">Save</button>', response.content)
+        self.assertIn(b'<button class="btn btn-primary" name="save" type="submit">Save</button>', response.content)
 
     def test_post(self):
         request = self.factory.post('add_bank_account/{}'.format(self.bankuser.id))
@@ -169,10 +170,10 @@ class TestViewUpdateUser(TestCase):
         request.user = self.user
         response = update_user(request, self.bank_user.id)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'<button type="submit" name="save">Save</button>', response.content)
+        self.assertIn(b'<button class="btn btn-primary" name="save" type="submit">Save</button>', response.content)
         self.assertIn(b'firstname', response.content)
         self.assertIn(b'lastname', response.content)
-#
+
     def test_post(self):
         request = self.factory.post('update/{}'.format(self.bank_user.id))
         request.user = self.user
@@ -188,10 +189,11 @@ class TestViewUpdateUser(TestCase):
 
                         'first_name': 'newfirstname',
                         'last_name': 'lastname',
-                        'DNI': '12345678Z'}
+                        'DNI': '12345678Z',
+                        'save': ''}
 
         response = update_user(request, self.bank_user.id)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
         num = BankUser.objects.filter(first_name='newfirstname').count()
         self.assertEquals(num, 1)

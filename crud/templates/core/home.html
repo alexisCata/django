@@ -3,9 +3,8 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-    <!--<p class="display-4">Hello, {{ user.first_name }} {{ user.last_name }} ({{ user.username }})</p>-->
-
-<a href="{% url 'add_user' %}">Add user</a>
+<div class="container">
+<a href="{% url 'add_user' %}" class="btn btn-primary pull-right">Add user</a>
 
 <ul>
     {% for v in users %}
@@ -20,7 +19,7 @@
         </ul>
     {% endfor %}
 </ul>
-
+</div>
 
 
 {% else %}
