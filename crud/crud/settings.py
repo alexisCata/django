@@ -132,7 +132,7 @@ WSGI_APPLICATION = 'crud.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': os.environ.get('DB_HOST', "db"),
+        'HOST': os.environ.get('DB_HOST', "localhost"),
         'NAME': os.environ.get('DB_NAME', "users"),
         'USER': os.environ.get('DB_USER', "alexis"),
         'PASSWORD': os.environ.get('DB_PASS', "alexis"),
@@ -174,6 +174,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+     os.path.join(BASE_DIR, 'static'),
+)
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
+
 
 # GOOGLE_OAUTH2
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '493955720882-9e8136lr3v39k5oajopfefhbbbc7rj4g.apps.googleusercontent.com'
