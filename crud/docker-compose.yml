@@ -10,7 +10,7 @@ services:
     links:
       - db
     depends_on:
-      - dbgiot
+      - db
   db:
     image: postgres
     ports:
