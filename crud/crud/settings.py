@@ -132,7 +132,7 @@ WSGI_APPLICATION = 'crud.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': os.environ.get('DB_HOST', "localhost"),
+        'HOST': os.environ.get('DB_HOST', "db"),
         'NAME': os.environ.get('DB_NAME', "users"),
         'USER': os.environ.get('DB_USER', "alexis"),
         'PASSWORD': os.environ.get('DB_PASS', "alexis"),
