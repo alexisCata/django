@@ -7,7 +7,9 @@
 
 <form method="POST">
     {% csrf_token %}
-    <button type="submit">Delete</button>
+    <button type="submit" name="delete">Delete</button>
+    <button onClick="javascript:history.go(-1);">Cancel</button>
+
 </form>
 {% else %}
     <a class="lead" href="{% url 'login' %}">Log in</a>
