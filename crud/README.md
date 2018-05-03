@@ -1,6 +1,6 @@
 # Simple django crud #
 
-The repository contains simple crud with Django 2. It uses postgres as database and a google account to login.
+The repository contains simple crud with Django. It uses postgres as database and a google account to login.
 
 It uses:
 
