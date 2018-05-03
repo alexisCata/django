@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from .forms import BankUserForm
 from .models import BankUser, BankAccount
-from .views import list_users, add_user, update_user, delete_user
+from .views import list_users, add_user, add_bank_account, update_user, delete_user
 
 
 # models test
@@ -34,9 +34,11 @@ class BankUserFormTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username='test', password='test')
+
     def test_bankuserform_valid(self):
         form_data = {'first_name': 'firstname',
-                     'last_name': 'lastname'}
+                     'last_name': 'lastname',
+                     'DNI': '12345678Z'}
         form = BankUserForm(data=form_data)
         form.owner = self.user
         self.assertTrue(form.is_valid())
@@ -70,7 +72,7 @@ class TestHome(TestCase):
 class TestViewListUsers(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='test', password='test')
-        BankUser.objects.create(first_name='test_name_bank_user', last_name='last_name', owner=self.user)
+        BankUser.objects.create(first_name='test_name_bank_user', last_name='last_name', DNI='12345678Z', owner=self.user)
 
         self.factory = RequestFactory()
 
@@ -92,40 +94,69 @@ class TestViewAddUser(TestCase):
         request.user = self.user
         response = add_user(request)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'<button type="submit">Save</button>', response.content)
+        self.assertIn(b'<button type="submit" name="save">Save</button>', response.content)
 
     def test_post(self):
         request = self.factory.post('add')
         request.user = self.user
         request.POST = {'csrfmiddlewaretoken': ['PE44cEnEQ41e8UL9DXb8KTGQd5vH55AKCgVFkAozw6qRn3B0jitAwbkg15O3Kocj'],
-                        'form-MIN_NUM_FORMS': '',
-                        'form-MAX_NUM_FORMS': '',
-                        'form-INITIAL_FORMS': '0',
-                        'form-TOTAL_FORMS': '1',
-
-                        'form-0-IBAN': 'ES7921000813610123456789',
-                        'form-0-bank_user': '',
-                        'form-0-id': '',
+                        # 'form-MIN_NUM_FORMS': '',
+                        # 'form-MAX_NUM_FORMS': '',
+                        # 'form-INITIAL_FORMS': '0',
+                        # 'form-TOTAL_FORMS': '1',
+                        #
+                        # 'form-0-IBAN': 'ES7921000813610123456789',
+                        # 'form-0-bank_user': '',
+                        # 'form-0-id': '',
 
                         'first_name': 'firstname',
-                        'last_name': 'lastname', }
+                        'last_name': 'lastname',
+                        'DNI': '12345678Z'}
 
         response = add_user(request)
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
 
-        user = BankUser.objects.filter(first_name='firstname', last_name='lastname')
+        user = BankUser.objects.filter(first_name='firstname', last_name='lastname', DNI='12345678Z')
         num = len(user)
         self.assertEquals(num, 1)
 
-        num = BankAccount.objects.filter(bank_user=user[0]).count()
+        # num = BankAccount.objects.filter(bank_user=user[0]).count()
+        # self.assertEquals(num, 1)
+
+
+class TestViewAddBankAccount(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='test', password='test')
+        self.bankuser = BankUser.objects.create(first_name='firstname', last_name='lastname', DNI='12345678Z', owner=self.user)
+        self.bankuser.save()
+        self.factory = RequestFactory()
+
+    def test_get(self):
+        request = self.factory.get('add_bank_account/{}'.format(self.bankuser.id))
+        request.user = self.user
+        response = add_bank_account(request, self.bankuser.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'<button type="submit" name="save">Save</button>', response.content)
+
+    def test_post(self):
+        request = self.factory.post('add_bank_account/{}'.format(self.bankuser.id))
+        request.user = self.user
+        request.POST = {'csrfmiddlewaretoken': ['PE44cEnEQ41e8UL9DXb8KTGQd5vH55AKCgVFkAozw6qRn3B0jitAwbkg15O3Kocj'],
+                        'IBAN': 'ES7921000813610123456789'}
+
+        response = add_bank_account(request, self.bankuser.id)
+
+        self.assertEqual(response.status_code, 302)
+
+        num = BankAccount.objects.filter(bank_user=self.bankuser).count()
         self.assertEquals(num, 1)
 
 
 class TestViewUpdateUser(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='test', password='test')
-        bu = BankUser(first_name='firstname', last_name='lastname', owner=self.user)
+        bu = BankUser(first_name='firstname', last_name='lastname', DNI='12345678Z', owner=self.user)
         bu.save()
         self.bank_user = bu
         ba = BankAccount(IBAN='ES7921000813610123456789', bank_user=self.bank_user)
@@ -138,28 +169,29 @@ class TestViewUpdateUser(TestCase):
         request.user = self.user
         response = update_user(request, self.bank_user.id)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'<button type="submit">Save</button>', response.content)
+        self.assertIn(b'<button type="submit" name="save">Save</button>', response.content)
         self.assertIn(b'firstname', response.content)
         self.assertIn(b'lastname', response.content)
-
+#
     def test_post(self):
         request = self.factory.post('update/{}'.format(self.bank_user.id))
         request.user = self.user
         request.POST = {'csrfmiddlewaretoken': ['PE44cEnEQ41e8UL9DXb8KTGQd5vH55AKCgVFkAozw6qRn3B0jitAwbkg15O3Kocj'],
-                        'form-MIN_NUM_FORMS': '',
-                        'form-MAX_NUM_FORMS': '',
-                        'form-INITIAL_FORMS': '0',
-                        'form-TOTAL_FORMS': '1',
-
-                        'form-0-IBAN': 'ES7921000813610123456789',
-                        'form-0-bank_user': '',
-                        'form-0-id': '',
+                        # 'form-MIN_NUM_FORMS': '',
+                        # 'form-MAX_NUM_FORMS': '',
+                        # 'form-INITIAL_FORMS': '0',
+                        # 'form-TOTAL_FORMS': '1',
+                        #
+                        # 'form-0-IBAN': 'ES7921000813610123456789',
+                        # 'form-0-bank_user': '',
+                        # 'form-0-id': '',
 
                         'first_name': 'newfirstname',
-                        'last_name': 'lastname'}
+                        'last_name': 'lastname',
+                        'DNI': '12345678Z'}
 
         response = update_user(request, self.bank_user.id)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
 
         num = BankUser.objects.filter(first_name='newfirstname').count()
         self.assertEquals(num, 1)
@@ -168,7 +200,7 @@ class TestViewUpdateUser(TestCase):
 class TestDeleteUser(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='test', password='test')
-        bu = BankUser(first_name='firstname', last_name='lastname', owner=self.user)
+        bu = BankUser(first_name='firstname', last_name='lastname', DNI='12345678Z', owner=self.user)
         bu.save()
         self.bank_user = bu
         ba = BankAccount(IBAN='ES7921000813610123456789', bank_user=self.bank_user)
@@ -186,6 +218,7 @@ class TestDeleteUser(TestCase):
     def test_post(self):
         request = self.factory.post('delete/{}'.format(self.bank_user.id))
         request.user = self.user
+        request.POST = {'delete': 'delete'}
 
         response = delete_user(request, self.bank_user.id)
         self.assertEqual(response.status_code, 302)
@@ -193,5 +226,5 @@ class TestDeleteUser(TestCase):
         self.assertNotIn(b'firstname', response.content)
         self.assertNotIn(b'lastname', response.content)
 
-        num = BankUser.objects.filter(first_name='firstname', last_name='lastname').count()
+        num = BankUser.objects.filter(first_name='firstname', last_name='lastname', DNI='12345678Z').count()
         self.assertEquals(num, 0)
