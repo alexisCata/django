@@ -1,6 +1,6 @@
 # Simple django crud #
 
-The repository contains a simple crud with Django. It uses google auth to login and to manage bankusers and bankaccounts.
+The repository contains a simple crud with Django. It uses google auth to login to manage bankusers and bankaccounts.
 
 It uses:
 
