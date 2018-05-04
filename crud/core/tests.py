@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from .forms import BankUserForm
 from .models import BankUser, BankAccount
-from .views import list_users, add_user, add_bank_account, update_user, delete_user
+from .views import list_users, add_user, add_bank_account, update_user, delete_user, delete_bank_account
 
 
 # models test
@@ -90,14 +90,14 @@ class TestViewAddUser(TestCase):
         self.factory = RequestFactory()
 
     def test_get(self):
-        request = self.factory.get('add')
+        request = self.factory.get('user')
         request.user = self.user
         response = add_user(request)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'<button type="submit" name="save">Save</button>', response.content)
+        self.assertIn(b'<button class="btn btn-primary" name="save" type="submit">Save</button>', response.content)
 
     def test_post(self):
-        request = self.factory.post('add')
+        request = self.factory.post('user')
         request.user = self.user
         request.POST = {'csrfmiddlewaretoken': ['PE44cEnEQ41e8UL9DXb8KTGQd5vH55AKCgVFkAozw6qRn3B0jitAwbkg15O3Kocj'],
                         # 'form-MIN_NUM_FORMS': '',
@@ -229,4 +229,36 @@ class TestDeleteUser(TestCase):
         self.assertNotIn(b'lastname', response.content)
 
         num = BankUser.objects.filter(first_name='firstname', last_name='lastname', DNI='12345678Z').count()
+        self.assertEquals(num, 0)
+
+
+class TestDeleteAccount(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='test', password='test')
+        bu = BankUser(first_name='firstname', last_name='lastname', DNI='12345678Z', owner=self.user)
+        bu.save()
+        self.bank_user = bu
+        ba = BankAccount(IBAN='ES7921000813610123456789', bank_user=self.bank_user)
+        ba.save()
+        self.bank_account = ba
+        self.factory = RequestFactory()
+
+    def test_get(self):
+        request = self.factory.get('user/delete_bank_account/{}'.format(self.bank_user.id))
+        request.user = self.user
+        response = delete_bank_account(request, self.bank_account.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Delete account', response.content)
+
+    def test_post(self):
+        request = self.factory.post('user/delete_bank_account/{}'.format(self.bank_user.id))
+        request.user = self.user
+        request.POST = {'delete': 'delete'}
+
+        response = delete_user(request, self.bank_user.id)
+        self.assertEqual(response.status_code, 302)
+
+        self.assertNotIn(b'ES7921000813610123456789', response.content)
+
+        num = BankAccount.objects.filter(IBAN="ES7921000813610123456789").count()
         self.assertEquals(num, 0)

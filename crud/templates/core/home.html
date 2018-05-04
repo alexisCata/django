@@ -1,28 +1,38 @@
 {% extends "registration/login.html" %}
 
-
 {% block content %}
-{% if user.is_authenticated %}
+
 <div class="container">
-<a href="{% url 'add_user' %}" class="btn btn-primary pull-right">Add user</a>
+    <a href="{% url 'add_user' %}" class="btn btn-primary mb-3">Add user</a>
+    {% for u in users %}
+        <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading" >
+                        <h4 class="panel-title">
+                            <a href="#collapse{{ u.id }}" data-toggle="collapse">{{ u.first_name }} {{ u.last_name }} ({{ u.DNI }})</a>
+                            {% if user == u.owner %}
+                            <a class="pull-right" href="{% url 'update_user' id=u.id %}">Edit</a>
+                            {% endif %}
+                        </h4>
+                    </div>
 
-<ul>
-    {% for v in users %}
-        <li>{{ v.first_name }} {{ v.last_name }} ({{ v.DNI }})
-            <a href="{% url 'update_user' id=v.id %}">Edit</a>
+                    <div id="collapse{{ u.id }}" class="panel-collapse collapse">
+                        <ul class="list-group">
+                            {% for account in u.bankaccount_set.all %}
+                                <li class="list-group-item" >{{ account.IBAN }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-        </li>
-        <ul>
-        {% for account in v.bankaccount_set.all %}
-        <li>{{ account.IBAN }}</li>
-            {% endfor %}
-        </ul>
     {% endfor %}
-</ul>
+
+
+
+
+
+
 </div>
 
-
-{% else %}
-    <a class="lead" href="{% url 'login' %}">Log in</a>
-{% endif %}
 {% endblock content %}

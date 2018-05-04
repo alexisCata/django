@@ -8,6 +8,9 @@ from .utils import validDNI
 
 
 class BankUserForm(forms.ModelForm):
+    """
+    BankUser form that validates only enter letter in names and also validates DNI
+    """
     class Meta:
         model = BankUser
         fields = ['first_name', 'last_name', 'DNI']
@@ -36,6 +39,9 @@ class BankUserForm(forms.ModelForm):
 
 
 class BankAccountForm(forms.ModelForm):
+    """
+    BankAccount form that validates IBAN
+    """
     class Meta:
         model = BankAccount
         fields = ['IBAN']

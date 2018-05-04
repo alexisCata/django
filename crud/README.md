@@ -1,6 +1,6 @@
 # Simple django crud #
 
-The repository contains simple crud with Django. It uses postgres as database and a google account to login.
+The repository contains a simple crud with Django. It uses google auth to login and to manage bankusers and bankaccounts.
 
 It uses:
 
@@ -14,15 +14,21 @@ It uses:
 
 - django-bootstrap3==10.0.1
 
-
-## Use
+## Use with docker-compose
+```
+docker-compose up
+```
+> Note: 
+>This project is prepared to run with docker-compose, so django default 
+db settings are the credentials used with postgres in docker-compose.yml
+ but django settings are prepared to get db data with environment variables
+ 
+## Use with docker image
 ```
 docker build -t django_crud .
 ```
-```
-docker run -d -p 8000:8000 -name django_crud django_crud
-```
-> Note: 
+
+settings.py
 ```
 DATABASES = {
     'default': {
@@ -34,11 +40,10 @@ DATABASES = {
     }
 }
 ```
->This project is prepared to run with docker-compose,  where you should run the postgres images with environament variables (see file docker-compose.yml)
->But you can execute the django image passing environment variables to use your own database
 ```
  docker run -d -p 8000:8000 -e DB_HOST=myhost -e DB_NAME=mydb -e DB_USER=myuser -e DB_PASS=mypass -name django_crud django_crud
 ```
+
 
 ## Tests
 To run the test execute

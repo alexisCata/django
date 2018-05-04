@@ -1,0 +1,29 @@
+{% extends "registration/login.html" %}
+{% load bootstrap3 %}
+
+{% block content %}
+
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        {% bootstrap_form form %}
+    </table>
+
+    <ul>
+        {% for account in accounts %}
+        <li>{{ account.IBAN }} <a href="{% url 'delete_bank_account' account.id %}"> Delete account</a></li>
+        {% endfor %}
+    </ul>
+    {% buttons %}
+    {% bootstrap_button "Save" name="save" button_type="submit" button_class="btn-primary" %}
+    {% bootstrap_button "Add BankAcount" name="save_and_add_ba" button_type="submit" button_class="btn-primary" %}
+    {% bootstrap_button "Cancel" name="reset" button_type="reset" button_class="btn-primary" href="javascript:history.go(-1);"%}
+    {% if bank_user %}
+
+    <a href="{% url 'delete_user' bank_user.id %}" class="btn btn-danger pull-right">Delete user</a>
+    {% endif %}
+    {% endbuttons %}
+
+</form>
+
+{% endblock content %}

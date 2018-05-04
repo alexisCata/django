@@ -2,7 +2,6 @@
 {% load bootstrap3 %}
 
 {% block content %}
-{% if user.is_authenticated %}
 
     <form method="POST">
         {% csrf_token %}
@@ -21,7 +20,5 @@
     {% if bank_user %}
     <a href="{% url 'delete_user' bank_user.id %}">Delete user</a>
     {% endif %}
-{% else %}
-    <a class="lead" href="{% url 'login' %}">Log in</a>
-{% endif %}
+
 {% endblock content %}

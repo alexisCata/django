@@ -1,6 +1,14 @@
 version: '2'
 services:
 
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "users"
+      POSTGRES_USER: "alexis"
+      POSTGRES_PASSWORD: "alexis"
   web:
     build: .
     volumes:
@@ -11,11 +19,3 @@ services:
       - db
     depends_on:
       - db
-  db:
-    image: postgres
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: "users"
-      POSTGRES_USER: "alexis"
-      POSTGRES_PASSWORD: "alexis"
